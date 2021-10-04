@@ -1,2 +1,2 @@
 # TinBus
-Uart Based Multi Access Communication Bus
+Simple UART based multi-access bus

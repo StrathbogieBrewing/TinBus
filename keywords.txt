@@ -1,0 +1,14 @@
+TinBus KEYWORD1
+begin KEYWORD2
+update KEYWORD2
+write KEYWORD2
+
+TinBus_kPriorityHighest LITERAL1
+TinBus_kPriorityHighhigh LITERAL1
+TinBus_kPriorityHighmed LITERAL1
+TinBus_kPriorityMedhigh LITERAL1
+TinBus_kPriorityMedium  LITERAL1
+TinBus_kPriorityMedlow  LITERAL1
+TinBus_kPriorityLowmed  LITERAL1
+TinBus_kPriorityLowlow  LITERAL1
+TinBus_kPriorityLowest  LITERAL1
