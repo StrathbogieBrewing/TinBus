@@ -13,14 +13,15 @@ extern "C" {
 // this will adjust the required bus silence period pre-transmit
 // the values below avoid corruption of the priority
 #define tinframe_kPriorityHighest  (0x00)
-#define tinframe_kPriorityHigh     (0x80)
-#define tinframe_kPriorityHighmed  (0xC0)
-#define tinframe_kPriorityMedhigh  (0xE0)
-#define tinframe_kPriorityMedium   (0xF0)
-#define tinframe_kPriorityMedlow   (0xF8)
-#define tinframe_kPriorityLowmed   (0xFC)
-#define tinframe_kPriorityLow      (0xFE)
-#define tinframe_kPriorityLowest   (0xFF)
+#define tinframe_kPriorityHigh     (0x01)
+#define tinframe_kPriorityHighmed  (0x02)
+#define tinframe_kPriorityMedhigh  (0x03)
+#define tinframe_kPriorityMedium   (0x04)
+#define tinframe_kPriorityMedlow   (0x05)
+#define tinframe_kPriorityLowmed   (0x06)
+#define tinframe_kPriorityLow      (0x07)
+
+extern unsigned char tinframe_priority[];
 
 #define tinframe_kMaxDataBytes (16)
 typedef struct {

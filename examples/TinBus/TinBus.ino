@@ -20,9 +20,13 @@ void loop() {
   if(m - secondsTimer > 1000L){
     secondsTimer = m;
 
+    textMessage = "Hello World!"
+
     tinframe_t txFrame;
     msg_t *txMsg = (msg_t *)txFrame.data;
-    strcpy(txMsg, "Hello!!");  // 10 bytes maximum payload
+    strcpy(txMsg, textMessage);
+    txFrame.dataLength = strlen(textMessage);
+    txFrame.priority = tinframe_kPriorityMedium;
     tinBus.write(&txFrame);
   }
 

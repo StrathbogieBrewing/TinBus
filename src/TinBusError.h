@@ -10,8 +10,10 @@ extern "C" {
 #define TinBus_kWriteComplete (2)
 #define TinBus_kWriteCollision (3)
 #define TinBus_kWriteTimeout (4)
-#define TinBus_kReadCRCError (5)
-#define TinBus_kReadOverunError (6)
+#define TinBus_kWriteOverrun (5)
+#define TinBus_kReadCRCError (6)
+#define TinBus_kReadOverrun (7)
+
 
 #ifdef __cplusplus
 } // extern "C"

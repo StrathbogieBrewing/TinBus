@@ -24,29 +24,23 @@ void TinBus::begin() {
   txIndex = kTXIdle;
 }
 
-int TinBus::update() {
+char TinBus::update() {
   noInterrupts();
   unsigned long lastActivity = micros() - rxActiveMicros;
   interrupts();
   if (lastActivity > interFrameMicros) {
-    rxIndex = 0; // reset rx buffer
+    rxIndex = 0;                          // reset rx buffer
     while (serialPort.available() > 0) {
-      serialPort.read(); // and purge rx fifo
+      serialPort.read();                  // and purge rx fifo
     }
     if (txIndex == kTXRequest) {
-      unsigned int txPriority = interFrameMicros;
-      unsigned char priority = txFrame.priority;
-      while (priority) {
-        txPriority += bitPeriodMicros;
-        priority <<= 1;
-      }
-      if ((lastActivity > txPriority) &&
+      if ((lastActivity > txHoldOff) &&
           (digitalRead(rxInterruptPin) == HIGH)) {
         txIndex = 0;
         unsigned char txData = ((char *)&txFrame)[txIndex];
-        serialPort.write(txData);  // start tx
+        serialPort.write(txData);         // start tx
         noInterrupts();
-        rxActiveMicros = micros(); // immediately update rxActiveMicros
+        rxActiveMicros = micros();        // immediately update rxActiveMicros
         interrupts();
         return TinBus_kWriteBusy;
       }
@@ -85,12 +79,12 @@ int TinBus::update() {
     if (rxIndex < tinframe_kFrameSize) {
       ((char *)&rxFrame)[rxIndex++] = rxData;
     } else {
-      return TinBus_kReadOverunError;
+      return TinBus_kReadOverrun;
     }
     if (rxIndex == (rxFrame.dataLength + tinframe_kFrameOverhead)) {
       rxIndex = kRXDone;
       if (tinframe_checkFrame(&rxFrame) == tinframe_kOK) {
-        rxCallback(&rxFrame);
+        rxCallback(rxFrame.data, rxFrame.dataLength);
         return TinBus_kOK;
       } else {
         return TinBus_kReadCRCError;
@@ -100,12 +94,19 @@ int TinBus::update() {
   return TinBus_kOK;
 }
 
-int TinBus::write(tinframe_t *frame) {
+char TinBus::write(unsigned char *data, unsigned char length, unsigned char priority) {
   if (txIndex != kTXIdle) {
     return TinBus_kWriteBusy;
   }
-  tinframe_prepareFrame(frame);
-  memcpy(&txFrame, frame, tinframe_kFrameSize);
+  txHoldOff = priority & 0x07;
+  txFrame.priority = tinframe_priority[txHoldOff];
+  txHoldOff += interFrameMicros;
+  txFrame.dataLength = length;
+  if(length > tinframe_kMaxDataBytes){
+    return TinBus_kWriteOverrun;
+  }
+  memcpy(txFrame.data, data, length);
+  tinframe_prepareFrame(&txFrame);
   txIndex = kTXRequest;
   return TinBus_kOK;
 }

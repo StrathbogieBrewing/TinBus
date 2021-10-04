@@ -5,18 +5,15 @@
 #include "TinBusError.h"
 #include "tinframe.h"
 
-#define TinBus_kBitPeriodMicros (1000000UL / TinBus_kBaud)
-#define TinBus_kInterFrameMicros (TinBus_kBitPeriodMicros * 15)
-
-typedef void (*TinBus_rxCallback)(tinframe_t *frame);
+typedef void (*TinBus_rxCallback)(unsigned char *data, unsigned char length);
 
 class TinBus {
 public:
   TinBus(HardwareSerial &serial, unsigned long baud, unsigned char interruptPin,
          TinBus_rxCallback callback);
   void begin();
-  int update();
-  int write(tinframe_t *frame);
+  char update();
+  char write(unsigned char *data, unsigned char length, unsigned char priority);
 
 private:
   HardwareSerial &serialPort;
@@ -28,6 +25,7 @@ private:
 
   tinframe_t txFrame;
   unsigned char txIndex;
+  unsigned char txHoldOff;
   tinframe_t rxFrame;
   unsigned char rxIndex;
 

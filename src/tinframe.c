@@ -10,6 +10,9 @@
 
 #include "tinframe.h"
 
+unsigned char tinframe_priority[] = {0x80, 0xC0, 0xE0, 0xF0,
+                                     0xF8, 0xFC, 0xFE, 0xFF};
+
 // CRC-8 uses DVB-S2 polynomial
 // ./pycrc.py --width 8 --poly 0xd5 --xor-in 0x00 --xor-out 0x00
 // --reflect-out false --reflect-in false --algorithm bbf --generate c -o crc.c
@@ -45,7 +48,8 @@ unsigned char tinframe_crcByte(unsigned char crc, unsigned char data) {
 
 void tinframe_prepareFrame(tinframe_t *frame) {
   unsigned char crc = 0;
-  unsigned char bytes = frame->dataLength + tinframe_kFrameOverhead - 1;
+  unsigned char bytes =
+      frame->dataLength + tinframe_kFrameOverhead - sizeof(frame->crc);
   unsigned char *frameBytes = (unsigned char *)frame;
   while (bytes--) {
     crc = tinframe_crcByte(crc, *frameBytes++);
@@ -55,9 +59,10 @@ void tinframe_prepareFrame(tinframe_t *frame) {
 
 char tinframe_checkFrame(const tinframe_t *frame) {
   unsigned char crc = 0;
-  unsigned char bytes = frame->dataLength + tinframe_kFrameOverhead - 1;
+  unsigned char bytes =
+      frame->dataLength + tinframe_kFrameOverhead - sizeof(frame->crc);
   unsigned const char *frameBytes = (unsigned char *)frame;
-  if (bytes > tinframe_kFrameSize - 1) {
+  if (bytes > tinframe_kFrameSize - sizeof(frame->crc)) {
     return tinframe_kFrameError;
   }
   while (bytes--) {
