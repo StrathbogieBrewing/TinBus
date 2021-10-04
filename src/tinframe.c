@@ -45,27 +45,26 @@ unsigned char tinframe_crcByte(unsigned char crc, unsigned char data) {
 
 void tinframe_prepareFrame(tinframe_t *frame) {
   unsigned char crc = 0;
-  unsigned const char *data = (unsigned char *)frame + 1; // no crc on start
-  unsigned char bytes = tinframe_kFrameSize - 2;          // or on crc itself
+  unsigned char bytes = frame->dataLength + tinframe_kFrameOverhead - 1;
+  unsigned char *frameBytes = (unsigned char *)frame;
   while (bytes--) {
-    crc = tinframe_crcByte(crc, *data++);
+    crc = tinframe_crcByte(crc, *frameBytes++);
   }
-  frame->crc = crc;                                       // set crc
-  frame->start = tinframe_kStart;                         // set start byte
+  frame->crc = crc;
 }
 
-int tinframe_checkFrame(const tinframe_t *frame) {
-  if (frame->start != tinframe_kStart) {                  // test start byte
-    return tinframe_kCRCError;
-  };
+char tinframe_checkFrame(const tinframe_t *frame) {
   unsigned char crc = 0;
-  unsigned const char *data = (unsigned char *)frame + 1; // no crc on start
-  unsigned char bytes = tinframe_kFrameSize - 2;          // or on crc itself
+  unsigned char bytes = frame->dataLength + tinframe_kFrameOverhead - 1;
+  unsigned const char *frameBytes = (unsigned char *)frame;
+  if (bytes > tinframe_kFrameSize - 1) {
+    return tinframe_kFrameError;
+  }
   while (bytes--) {
-    crc = tinframe_crcByte(crc, *data++);
+    crc = tinframe_crcByte(crc, *frameBytes++);
   }
   if (frame->crc != crc) {
-    return tinframe_kFrameError;
+    return tinframe_kCRCError;
   }
   return tinframe_kOK;
 }
