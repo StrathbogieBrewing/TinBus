@@ -14,7 +14,6 @@ public:
   void begin();
   char update();
   char write(unsigned char *data, unsigned char length, unsigned char priority);
-
 private:
   HardwareSerial &serialPort;
   unsigned char rxInterruptPin;
@@ -22,13 +21,11 @@ private:
   unsigned long baudRate;
   unsigned int bitPeriodMicros;
   unsigned int interFrameMicros;
-
   tinframe_t txFrame;
   unsigned char txIndex;
   unsigned char txHoldOff;
   tinframe_t rxFrame;
   unsigned char rxIndex;
-
   static void externalInterrupt(void);
   static volatile unsigned long rxActiveMicros;
 };
