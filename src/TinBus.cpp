@@ -5,7 +5,7 @@
 #define kTXIdle (tinframe_kFrameSize + 2)
 
 TinBus::TinBus(HardwareSerial &serial, unsigned long baud,
-               unsigned char interruptPin, TinBus_rxCallback callback)
+               uint8_t interruptPin, TinBus_rxCallback callback)
     : serialPort{serial}, baudRate{baud}, rxInterruptPin{interruptPin},
       rxCallback{callback} {}
 
@@ -37,7 +37,7 @@ char TinBus::update() {
       if ((lastActivity > txHoldOff) &&
           (digitalRead(rxInterruptPin) == HIGH)) {
         txIndex = 0;
-        unsigned char txData = ((char *)&txFrame)[txIndex];
+        uint8_t txData = ((char *)&txFrame)[txIndex];
         serialPort.write(txData);         // start tx
         noInterrupts();
         rxActiveMicros = micros();        // immediately update rxActiveMicros
@@ -53,9 +53,9 @@ char TinBus::update() {
     }
   }
   if (txIndex < tinframe_kFrameSize) {
-    unsigned char txData = ((char *)&txFrame)[txIndex];
+    uint8_t txData = ((char *)&txFrame)[txIndex];
     if (serialPort.available() > 0) {
-      unsigned char rxData = serialPort.read();
+      uint8_t rxData = serialPort.read();
       if (rxData == txData) {
         ++txIndex;
         if (txIndex < txFrame.dataLength + tinframe_kFrameOverhead) {
@@ -75,7 +75,7 @@ char TinBus::update() {
   }
 
   if (serialPort.available() > 0) {
-    unsigned char rxData = serialPort.read();
+    uint8_t rxData = serialPort.read();
     if (rxIndex < tinframe_kFrameSize) {
       ((char *)&rxFrame)[rxIndex++] = rxData;
     } else {
@@ -94,7 +94,7 @@ char TinBus::update() {
   return TinBus_kOK;
 }
 
-char TinBus::write(unsigned char *data, unsigned char length, unsigned char priority) {
+char TinBus::write(uint8_t *data, uint8_t length, uint8_t priority) {
   if (txIndex != kTXIdle) {
     return TinBus_kWriteBusy;
   }
