@@ -24,7 +24,7 @@ private:
   unsigned int interFrameMicros;
   tinframe_t txFrame;
   uint8_t txIndex;
-  uint8_t txHoldOff;
+  unsigned long txHoldOff;
   tinframe_t rxFrame;
   uint8_t rxIndex;
   static void externalInterrupt(void);

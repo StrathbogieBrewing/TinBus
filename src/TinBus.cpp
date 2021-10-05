@@ -98,9 +98,9 @@ char TinBus::write(uint8_t *data, uint8_t length, uint8_t priority) {
   if (txIndex != kTXIdle) {
     return TinBus_kWriteBusy;
   }
-  txHoldOff = priority & 0x07;
-  txFrame.priority = tinframe_priority[txHoldOff];
-  txHoldOff += interFrameMicros;
+  priority &= 0x07;
+  txFrame.priority = tinframe_priority[priority];
+  txHoldOff = interFrameMicros + bitPeriodMicros * (uint32_t)priority;
   txFrame.dataLength = length;
   if(length > tinframe_kMaxDataBytes){
     return TinBus_kWriteOverrun;
