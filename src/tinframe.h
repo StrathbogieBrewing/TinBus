@@ -9,18 +9,6 @@ extern "C" {
 #define tinframe_kCRCError (1)
 #define tinframe_kFrameError (2)
 
-// first byte of tin frame data is used to indicate frame start / prioirty
-// this will adjust the required bus silence period pre-transmit
-// the values below avoid corruption of the priority
-#define tinframe_kPriorityHighest  (0x00)
-#define tinframe_kPriorityHigh     (0x01)
-#define tinframe_kPriorityHighmed  (0x02)
-#define tinframe_kPriorityMedhigh  (0x03)
-#define tinframe_kPriorityMedium   (0x04)
-#define tinframe_kPriorityMedlow   (0x05)
-#define tinframe_kPriorityLowmed   (0x06)
-#define tinframe_kPriorityLow      (0x07)
-
 extern unsigned char tinframe_priority[];
 
 #define tinframe_kMaxDataBytes (16)

@@ -10,6 +10,9 @@
 
 #include "tinframe.h"
 
+// first byte of tin frame data is used to indicate frame start / prioirty
+// this will adjust the required bus silence period pre-transmit
+// the values below avoid corruption of the priority
 unsigned char tinframe_priority[] = {0x80, 0xC0, 0xE0, 0xF0,
                                      0xF8, 0xFC, 0xFE, 0xFF};
 

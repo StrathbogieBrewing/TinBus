@@ -5,6 +5,10 @@
 #include "TinBusError.h"
 #include "tinframe.h"
 
+#define HIGH_PRIORITY     (0x00)
+#define MEDIUM_PRIORITY   (0x04)
+#define LOW_PRIORIY       (0x07)
+
 typedef void (*TinBus_rxCallback)(uint8_t *data, uint8_t length);
 
 class TinBus {
