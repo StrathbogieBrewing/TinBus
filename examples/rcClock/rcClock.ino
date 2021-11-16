@@ -30,9 +30,13 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-  static uint8_t data = 0;
-  Serial.write(data++);
+  // static uint8_t data = 0;
+  // Serial.println(data++);
 
-  // delayMicroseconds(200);
-  transmitByte(data++);
+  // delay(1000);
+  // transmitByte(data++);
+  int16_t rxData = receiveByte();
+  if(rxData >= 0){
+    Serial.println(rxData);
+  }
 }

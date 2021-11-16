@@ -59,23 +59,35 @@ bool transmitByte(uint8_t byte) {
 
   noInterrupts();
   if(state == RX_IDLE){
-    PORTB |= (1 << 1);
-    PORTB &= ~(1 << 1);
+    // PORTB |= (1 << 1);
+    // PORTB &= ~(1 << 1);
 
     TIMSK &= ~(1 << TICIE1); // disable input capture interrupt
     OCR1A = TCNT1 + TX_DATA_TIME;
     sendPulse();            // send first clock pulse
-    TIFR |= (1 << ICF1);    // clear input capture interrupt flag
     pulseCounter = 1;
     state = TX_SEND;
     txData = byte;
     TIFR |= (1 << OCF1A);    // clear timer interrupt flag
     TIMSK |= (1 << OCIE1A);  // enable timer compare interrupt
+    TIFR |= (1 << ICF1);    // clear input capture interrupt flag
     interrupts();
     return true;
   }
   interrupts();
   return false;
+}
+
+int16_t receiveByte(void){
+  noInterrupts();
+  int16_t retval = rxData;
+  if(state == RX_IDLE){
+    rxData = RX_EMPTY;
+    interrupts();
+    return retval;
+  }
+  interrupts();
+  return RX_EMPTY;
 }
 
 
