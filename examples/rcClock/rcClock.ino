@@ -30,10 +30,9 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-
   static uint8_t data = 0;
   Serial.write(data++);
-  // delay(1);
-  delayMicroseconds(150);
-  // transmitByte(data++);
+
+  // delayMicroseconds(200);
+  transmitByte(data++);
 }

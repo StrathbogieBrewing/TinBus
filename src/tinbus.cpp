@@ -7,18 +7,22 @@
 #define TX_DATA_TIME (CLOCK_PERIOD / 2)
 
 #define RX_IGNORE_TIME (CLOCK_PERIOD / 4)
-#define RX_TIME_OUT (3 * CLOCK_PERIOD / 2)
+#define RX_BYTE_TIMEOUT (3 * CLOCK_PERIOD / 2)
+#define RX_FRAME_TIMEOUT (3 * CLOCK_PERIOD)
+#define RX_IDLE_TIMEOUT (5 * CLOCK_PERIOD)
 
 #define RX_THRESHOLD (3 * CLOCK_PERIOD / 4)
 
 #define RX_SAMPLE_TIME (CLOCK_PERIOD / 4)
 #define TIMER1_MAX (0xFFFF)
 
-
 #define RX_IDLE (0)
 #define RX_IGNORE (1)
 #define RX_SAMPLE (2)
-#define TX_SEND (3)
+#define RX_BYTE_READY (3)
+#define RX_FRAME_READY (4)
+
+#define TX_SEND (10)
 
 #define RX_EMPTY (-1)
 #define RX_ERROR (-2)
@@ -52,8 +56,12 @@ void tinbusBegin(void) {
 }
 
 bool transmitByte(uint8_t byte) {
+
   noInterrupts();
   if(state == RX_IDLE){
+    PORTB |= (1 << 1);
+    PORTB &= ~(1 << 1);
+
     TIMSK &= ~(1 << TICIE1); // disable input capture interrupt
     OCR1A = TCNT1 + TX_DATA_TIME;
     sendPulse();            // send first clock pulse
@@ -68,6 +76,76 @@ bool transmitByte(uint8_t byte) {
   }
   interrupts();
   return false;
+}
+
+
+
+
+ISR(TIMER1_COMPA_vect) {
+
+  if(state == TX_SEND){
+    OCR1A += TX_DATA_TIME;
+
+    if(TIFR & (1 << ICF1)){
+      // abort transmission if we have seen any other pulses
+      PORTB |= (1 << 1);
+      PORTB &= ~(1 << 1);
+    }
+
+    if (++pulseCounter & 0x01) {
+      sendPulse();  // send clock pulse
+      if (pulseCounter & 0x10) {  // is tx complete
+        // TIMSK &= ~(1 << OCIE1A);    // disable timer interrupt
+        // state = RX_IDLE;
+        state = RX_FRAME_READY;
+        OCR1A += TX_DATA_TIME * 3;  // need 2 clock cycles between bytes
+
+        TIFR |= (1 << ICF1);    // clear input capture interrupt flag
+        TIMSK |= (1 << TICIE1); // enable input capture interrupt
+        pulseCounter = 0;
+      }
+    } else {
+      if (txData & 0x80) {
+        sendPulse(); // send data pulse
+      }
+      txData <<= 1;  // move to next bit
+    }
+
+    TIFR |= (1 << ICF1);    // clear input capture interrupt flag
+
+  } else if(state == RX_IGNORE){
+    state = RX_SAMPLE;
+    OCR1A = RX_BYTE_TIMEOUT;
+    TIFR |= (1 << ICF1);    // clear input capture interrupt flag
+    TIMSK |= (1 << TICIE1); // enable input capture interrupt
+  } else if(state == RX_SAMPLE){
+    state = RX_BYTE_READY;  // rx byte timeout - end of byte
+    OCR1A = RX_FRAME_TIMEOUT;
+
+    // rxData = RX_EMPTY;
+    // if(rxData == RX_EMPTY){
+      if(pulseCounter == 17){
+        rxData = (uint16_t)rxShiftRegister;
+        PORTB |= (1 << 1);
+        PORTB &= ~(1 << 1);
+      } else {
+        rxData = RX_COUNT_ERROR;
+      }
+      pulseCounter = 0;
+    // }
+
+  } else if(state == RX_BYTE_READY){
+    state = RX_FRAME_READY;  // rx frame timeout - end of frame
+    OCR1A = RX_IDLE_TIMEOUT;
+
+
+  } else if(state == RX_FRAME_READY){
+    state = RX_IDLE;          // return to idle - allows for transmitting again
+    TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
+
+    PORTB |= (1 << 1);
+    PORTB &= ~(1 << 1);
+  }
 }
 
 ISR(TIMER1_CAPT_vect) {
@@ -91,46 +169,8 @@ ISR(TIMER1_CAPT_vect) {
   OCR1A = RX_IGNORE_TIME;  // set ignore period
   TIMSK |= (1 << OCIE1A);  // enable timer interrupt
 
-  TIMSK &= ~(1 << TICIE1); // disable compare interrupt
+  TIMSK &= ~(1 << TICIE1); // disable input capture interrupt
   TIFR |= (1 << OCF1A);    // clear timer interrupt flag
-}
-
-
-ISR(TIMER1_COMPA_vect) {
-  if(state == TX_SEND){
-    if (++pulseCounter & 0x01) {
-      sendPulse();  // send clock pulse
-      if (pulseCounter & 0x10) {  // is tx complete
-        TIMSK &= ~(1 << OCIE1A);    // disable compare interrupt
-      }
-    } else {
-      if (txData & 0x80) {
-        sendPulse(); // send data pulse
-      }
-      txData <<= 1;  // move to next bit
-    }
-  } else if(state == RX_IGNORE){
-    state = RX_SAMPLE;
-    OCR1A = RX_TIME_OUT;
-    TIFR |= (1 << ICF1);    // clear input capture interrupt flag
-    TIMSK |= (1 << TICIE1); // enable interrupt capture interrupt
-  } else if(state == RX_SAMPLE){
-    state = RX_IDLE;  // rx timeout - end of byte
-
-    rxData = RX_EMPTY;
-
-    if(rxData == RX_EMPTY){
-      if(pulseCounter == 17){
-        rxData = (uint16_t)rxShiftRegister;
-      } else {
-        rxData = RX_COUNT_ERROR;
-      }
-    }
-    pulseCounter = 0;
-    TIMSK &= ~(1 << OCIE1A); // disable timer interrupt
-    TIFR |= (1 << ICF1);    // clear input capture interrupt flag
-    TIMSK |= (1 << TICIE1); // enable interrupt capture interrupt
-  }
 }
 
 void sendPulse(void) {
