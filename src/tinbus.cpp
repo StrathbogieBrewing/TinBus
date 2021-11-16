@@ -2,7 +2,7 @@
 
 #define CPU_MHZ (8)
 
-#define CLOCK_PERIOD (125 * CPU_MHZ)
+#define CLOCK_PERIOD (200 * CPU_MHZ)
 
 #define TX_DATA_TIME (CLOCK_PERIOD / 2)
 
@@ -91,10 +91,9 @@ int16_t receiveByte(void){
 }
 
 
-
-
 ISR(TIMER1_COMPA_vect) {
-
+  PORTB |= (1 << 1);
+  PORTB &= ~(1 << 1);
   if(state == TX_SEND){
     OCR1A += TX_DATA_TIME;
 
@@ -158,6 +157,8 @@ ISR(TIMER1_COMPA_vect) {
     PORTB |= (1 << 1);
     PORTB &= ~(1 << 1);
   }
+  PORTB |= (1 << 1);
+  PORTB &= ~(1 << 1);
 }
 
 ISR(TIMER1_CAPT_vect) {
