@@ -29,11 +29,22 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(PIN_LED_AMBER, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(100);                       // wait for a second
-  digitalWrite(PIN_LED_AMBER, LOW);    // turn the LED off by making the voltage LOW
-  delay(100);                       // wait for a second
-
   static uint8_t data = 0;
-  transmitByte(data++);
+
+  // digitalWrite(PIN_LED_AMBER, HIGH);   // turn the LED on (HIGH is the voltage level)
+  // delayMicroseconds(10000);                      // wait for a second
+  // digitalWrite(PIN_LED_AMBER, LOW);    // turn the LED off by making the voltage LOW
+  // delay(100);                       // wait for a second
+
+  while(!isBusIdle());
+
+  tinbusWrite(0x10);
+  delayMicroseconds(500);
+  tinbusWrite(0x31);
+  delayMicroseconds(500);
+  tinbusWrite(0x72);
+  delayMicroseconds(500);
+  tinbusWrite(0xF3);
+  // tinbusWrite(data++);
+  // tinbusWrite(data++);
 }
