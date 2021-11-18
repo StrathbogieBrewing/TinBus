@@ -12,8 +12,8 @@
 // #define TX_FRAME_TIME (4 * CLOCK_TIME)
 
 #define RX_IGNORE_TIME (CLOCK_TIME / 4)
-#define RX_BYTE_TIMEOUT (3 * CLOCK_TIME / 2)
-#define RX_FRAME_TIMEOUT (3 * CLOCK_TIME)
+#define RX_BYTE_TIMEOUT ((3 * CLOCK_TIME / 2) - RX_IGNORE_TIME)
+#define RX_FRAME_TIMEOUT (3 * CLOCK_TIME / 2)
 #define RX_IDLE_TIMEOUT (5 * CLOCK_TIME)
 
 #define RX_THRESHOLD (3 * CLOCK_TIME / 4)
@@ -171,40 +171,36 @@ void timer1CompA(void){
     TIFR |= (1 << ICF1);    // clear input capture interrupt flag
     TIMSK |= (1 << TICIE1); // enable input capture interrupt
   } else if(state == RX_SAMPLING){
-    // PORTB |= (1 << 1);
-    // PORTB &= ~(1 << 1);
-
     state = RX_BYTE_READY;  // rx byte timeout - end of byte
-    OCR1A += RX_BYTE_TIMEOUT;
+    OCR1A += RX_FRAME_TIMEOUT;
 
     // rxData = RX_EMPTY;
     // if(rxData == RX_EMPTY){
       if(pulseCounter == 17){
         rxData = (uint16_t)rxShiftReg;
-        // PORTB |= (1 << 1);
-        // PORTB &= ~(1 << 1);
+        PORTB |= (1 << 1);
+        PORTB &= ~(1 << 1);
       } else {
         rxData = RX_COUNT_ERROR;
       }
       pulseCounter = 0;
     // }
 
-  } else if(state == RX_BYTE_READY){
-    state = RX_FRAME_READY;  // rx frame timeout - end of frame
-    OCR1A = RX_IDLE_TIMEOUT;
+  } else if(state == RX_BYTE_READY){  // rx frame timeout - end of frame
+    // state = RX_FRAME_READY;
+    // OCR1A = RX_IDLE_TIMEOUT;
 
-  } else if(state == RX_FRAME_READY){
-
-    // if(tx_buffer_head == tx_buffer_tail){
-    //   state = RX_IDLE;          // return to idle - allows for transmitting again
-    //   TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
-    // } else {
-    //   state = TX_BYTE_BREAK;  // byte break if more tx data to send
-    //   OCR1A += TX_BYTE_TIME;
-    // }
+    state = RX_IDLE;          // return to idle - allows for transmitting again
+    TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
 
     PORTB |= (1 << 1);
     PORTB &= ~(1 << 1);
+
+  } else if(state == RX_FRAME_READY){
+    state = RX_IDLE;          // return to idle - allows for transmitting again
+    TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
+
+
   } else if(state == TX_BYTE_BREAK){
     if(tx_buffer_head == tx_buffer_tail){
       state = TX_FRAME_BREAK;  // frame break if no more tx data
@@ -286,6 +282,14 @@ void sendPulse(void) {
   PORTD &= ~(1 << 7);
   PORTD &= ~(1 << 6);
 }
+
+// if(tx_buffer_head == tx_buffer_tail){
+//   state = RX_IDLE;          // return to idle - allows for transmitting again
+//   TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
+// } else {
+//   state = TX_BYTE_BREAK;  // byte break if more tx data to send
+//   OCR1A += TX_BYTE_TIME;
+// }
 
 // ISR(TIMER1_COMPA_vect) {
 //   if (++pulseCounter & 0x01) {
