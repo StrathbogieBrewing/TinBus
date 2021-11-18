@@ -17,7 +17,7 @@
 //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
 //                  +----+
 
-#include "tinbus.h"
+#include "TinBus.h"
 
 #define PIN_LED_AMBER (9)
 
@@ -33,10 +33,20 @@ void loop() {
   // static uint8_t data = 0;
   // Serial.println(data++);
 
+  // while(!isBusIdle());
+  //
+  // tinbusWrite(0x10);
+  // delayMicroseconds(500);
+  // tinbusWrite(0x31);
+  // delayMicroseconds(500);
+  // tinbusWrite(0x72);
+  // delayMicroseconds(500);
+  // tinbusWrite(0xF3);
+
   // delay(1000);
   // transmitByte(data++);
-  int16_t rxData = receiveByte();
+  int16_t rxData = tinbusRead();
   if(rxData >= 0){
-    Serial.println(rxData);
+    Serial.println(rxData, HEX);
   }
 }
