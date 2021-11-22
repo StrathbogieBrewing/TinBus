@@ -97,6 +97,8 @@ bool tinbusWrite(uint8_t txByte){
     PORTB &= ~(1 << 1);
     PORTB |= (1 << 1);
     PORTB &= ~(1 << 1);
+
+
     state = TX_BYTE_BREAK;
     // TIFR |= (1 << OCF1A);    // clear timer interrupt flag
     OCR1A = TCNT1 + 10;
@@ -113,11 +115,22 @@ bool tinbusWrite(uint8_t txByte){
 
 int16_t tinbusRead(void){
   noInterrupts();
-  int16_t retval = rxData;
-  // if(state == RX_IDLE){
-    rxData = RX_EMPTY;
+  if(rx_buffer_head == rx_buffer_tail){  // buffer empty
     interrupts();
-    return retval;
+    return 0;
+  }
+
+  uint8_t rxByte = rx_buffer[rx_buffer_tail++];
+  tx_buffer_tail &= TINBUS_BUFFER_MASK;
+  interrupts();
+  return (uint16_t)rxByte;
+
+  // noInterrupts();
+  // int16_t retval = rxData;
+  // // if(state == RX_IDLE){
+  //   rxData = RX_EMPTY;
+  //   interrupts();
+  //   return retval;
   // }
   // interrupts();
   // return RX_EMPTY;
@@ -157,8 +170,8 @@ void timer1CompA(void){
         OCR1A += TX_PULSE_TIME;  // always at least one period
       }
     } else {
-      if (txData & 0x80) {
-        sendPulse(); // send data pulse
+      if (txData & 0x80 == 0) {
+        sendPulse(); // send data pulse if bit is zero
       }
       txData <<= 1;  // move to next bit
       OCR1A += TX_PULSE_TIME;  // always at least one period
@@ -174,17 +187,21 @@ void timer1CompA(void){
     state = RX_BYTE_READY;  // rx byte timeout - end of byte
     OCR1A += RX_FRAME_TIMEOUT;
 
-    // rxData = RX_EMPTY;
-    // if(rxData == RX_EMPTY){
-      if(pulseCounter == 17){
-        rxData = (uint16_t)rxShiftReg;
-        PORTB |= (1 << 1);
-        PORTB &= ~(1 << 1);
-      } else {
-        rxData = RX_COUNT_ERROR;
+    if(pulseCounter == 17){  // complete byte received
+      uint8_t i = (rx_buffer_head + 1) & TINBUS_BUFFER_MASK;
+      if(i == rx_buffer_tail){  // rx buffer is full
+        rxData = RX_BUFFER_ERROR;
+      } else {  // append rx data to buffer
+        rx_buffer[rx_buffer_head] = rxShiftReg;
+        rx_buffer_head = i;
       }
-      pulseCounter = 0;
-    // }
+
+      PORTB |= (1 << 1);
+      PORTB &= ~(1 << 1);
+    } else {
+      rxData = RX_COUNT_ERROR;
+    }
+    pulseCounter = 0;
 
   } else if(state == RX_BYTE_READY){  // rx frame timeout - end of frame
     // state = RX_FRAME_READY;
@@ -250,10 +267,10 @@ ISR(TIMER1_CAPT_vect) {  // for receiving pulses
   if(pulseCounter++){   // ignore the first pulse
     if(icr1 > RX_THRESHOLD){  // must have received a clock pulse
       pulseCounter++;  // increment counter for the missing data pulse
-      rxShiftReg = (rxShiftReg << 1) | 0x00;  // and shift in the zero
+      rxShiftReg = (rxShiftReg << 1) | 0x01;  // and shift in the one
     } else {
       if((pulseCounter & 0x01) == 0){  // must have received a data pulse
-        rxShiftReg = (rxShiftReg << 1) | 0x01;
+        rxShiftReg = (rxShiftReg << 1) | 0x00;  // shift in the zero
       }
     }
   }
