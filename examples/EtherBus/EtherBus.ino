@@ -17,7 +17,7 @@
 //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
 //                  +----+
 
-#include "tinbus.h"
+#include "TinBus.h"
 
 #define PIN_LED_AMBER (9)
 
@@ -25,26 +25,33 @@ void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(PIN_LED_AMBER, OUTPUT);
   tinbusBegin();
+  Serial.begin(19200);
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  static uint8_t data = 0;
 
-  // digitalWrite(PIN_LED_AMBER, HIGH);   // turn the LED on (HIGH is the voltage level)
-  // delayMicroseconds(10000);                      // wait for a second
-  // digitalWrite(PIN_LED_AMBER, LOW);    // turn the LED off by making the voltage LOW
-  // delay(100);                       // wait for a second
+  int16_t rxData = tinbusRead();
+  if(rxData >= 0){
+    Serial.println(rxData, HEX);
+  }
 
-  while(!isBusIdle());
-
-  tinbusWrite(0x10);
-  delayMicroseconds(500);
-  tinbusWrite(0x31);
-  delayMicroseconds(500);
-  tinbusWrite(0x72);
-  delayMicroseconds(500);
-  tinbusWrite(0xF3);
-  // tinbusWrite(data++);
-  // tinbusWrite(data++);
+  // static uint8_t data = 0;
+  //
+  // // digitalWrite(PIN_LED_AMBER, HIGH);   // turn the LED on (HIGH is the voltage level)
+  // // delayMicroseconds(10000);                      // wait for a second
+  // // digitalWrite(PIN_LED_AMBER, LOW);    // turn the LED off by making the voltage LOW
+  // // delay(100);                       // wait for a second
+  //
+  // while(!isBusIdle());
+  //
+  // tinbusWrite(0x10);
+  // delayMicroseconds(500);
+  // tinbusWrite(0x31);
+  // delayMicroseconds(500);
+  // tinbusWrite(0x72);
+  // delayMicroseconds(500);
+  // tinbusWrite(0xF3);
+  // // tinbusWrite(data++);
+  // // tinbusWrite(data++);
 }

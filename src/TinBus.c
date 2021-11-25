@@ -4,8 +4,8 @@
 
 #define CPU_MHZ (8)
 
-// this should be the period between clock pulses - 200 us
-#define CLOCK_TIME (200 * CPU_MHZ)
+// this should be the period between clock pulses - 100 us
+#define CLOCK_TIME (100 * CPU_MHZ)
 
 #define TX_PULSE_TIME (CLOCK_TIME / 2)
 #define TX_BYTE_TIME (2 * CLOCK_TIME)
@@ -34,6 +34,7 @@
 #define RX_EMPTY (-1)
 #define RX_ERROR (-2)
 #define RX_COUNT_ERROR (-3)
+#define RX_BUFFER_ERROR (-4)
 
 void sendPulse(void);
 void timer1CompA(void);
@@ -111,13 +112,11 @@ bool tinbusWrite(uint8_t txByte){
   return true;
 }
 
-
-
 int16_t tinbusRead(void){
   noInterrupts();
   if(rx_buffer_head == rx_buffer_tail){  // buffer empty
     interrupts();
-    return 0;
+    return RX_EMPTY;
   }
 
   uint8_t rxByte = rx_buffer[rx_buffer_tail++];
@@ -170,7 +169,7 @@ void timer1CompA(void){
         OCR1A += TX_PULSE_TIME;  // always at least one period
       }
     } else {
-      if (txData & 0x80 == 0) {
+      if ((txData & 0x80) == 0) {
         sendPulse(); // send data pulse if bit is zero
       }
       txData <<= 1;  // move to next bit

@@ -24,29 +24,23 @@
 void setup() {
   pinMode(PIN_LED_AMBER, OUTPUT);
   tinbusBegin();
-  Serial.begin(115200);
+  // Serial.begin(19200);
 }
 
-// the loop function runs over and over again forever
 void loop() {
 
-  // static uint8_t data = 0;
-  // Serial.println(data++);
+  digitalWrite(PIN_LED_AMBER, digitalRead(PIN_LED_AMBER) == 0);
+  delayMicroseconds(30000);
 
-  // while(!isBusIdle());
-  //
-  // tinbusWrite(0x10);
-  // delayMicroseconds(500);
-  // tinbusWrite(0x31);
-  // delayMicroseconds(500);
-  // tinbusWrite(0x72);
-  // delayMicroseconds(500);
-  // tinbusWrite(0xF3);
+  while(!isBusIdle());
+  tinbusWrite(0x10);
+  tinbusWrite(0x31);
+  tinbusWrite(0x72);
+  tinbusWrite(0xF3);
 
-  // delay(1000);
-  // transmitByte(data++);
-  int16_t rxData = tinbusRead();
-  if(rxData >= 0){
-    Serial.println(rxData, HEX);
-  }
+  while(!isBusIdle());
+  tinbusWrite(0xF3);
+  tinbusWrite(0x72);
+  tinbusWrite(0x31);
+  tinbusWrite(0x10);
 }
