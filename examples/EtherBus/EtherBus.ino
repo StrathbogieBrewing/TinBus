@@ -25,16 +25,26 @@ void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(PIN_LED_AMBER, OUTPUT);
   tinbusBegin();
-  Serial.begin(19200);
+  Serial.begin(9600);
 }
 
 // the loop function runs over and over again forever
 void loop() {
 
+delayMicroseconds(5000);
+
   int16_t rxData = tinbusRead();
   if(rxData >= 0){
     Serial.println(rxData, HEX);
+  } else
+  if(rxData == TINBUS_END_OF_FRAME){
+    Serial.println("EOF");
+  } else if(rxData != TINBUS_NO_DATA){
+    Serial.println(rxData);
   }
+
+  // PORTB |= (1 << 1);
+  // PORTB &= ~(1 << 1);
 
   // static uint8_t data = 0;
   //
