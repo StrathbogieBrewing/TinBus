@@ -17,30 +17,39 @@
 //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
 //                  +----+
 
-#include "TinBus.h"
+// #include "tinbus.h"
+
+#include "sltin.h"
 
 #define PIN_LED_AMBER (9)
 
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(PIN_LED_AMBER, OUTPUT);
-  tinbusBegin();
+  tinbus_init();
   Serial.begin(9600);
+}
+
+
+void writeByte(uint8_t byte){
+  Serial.write(byte);
 }
 
 // the loop function runs over and over again forever
 void loop() {
+  tinbus_frame_t frame;
 
-delayMicroseconds(5000);
-
-  int16_t rxData = tinbusRead();
-  if(rxData >= 0){
-    Serial.println(rxData, HEX);
-  } else
-  if(rxData == TINBUS_END_OF_FRAME){
-    Serial.println("EOF");
-  } else if(rxData != TINBUS_NO_DATA){
-    Serial.println(rxData);
+  uint8_t status = tinbus_read(&frame);
+  // if(status >= 0){
+  //   Serial.println(status, HEX);
+  // } else
+  if(status == TINBUS_RX_FRAME_RECEIVED){
+    // Serial.println("RX OK");
+    sltin_sendFrame(&frame, writeByte);
+  } else if(status != TINBUS_RX_NO_DATA){
+    Serial.println(status);
+  } else {
+    delayMicroseconds(5000);
   }
 
   // PORTB |= (1 << 1);
