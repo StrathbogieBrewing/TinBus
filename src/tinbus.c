@@ -4,14 +4,15 @@
 
 static inline uint16_t TIMER_SYNC(void) __attribute__((always_inline));
 static inline uint16_t TIMER_SYNC(void) {
-  uint16_t x = ICR1;
-  TCNT1 = TCNT1 - x;
+  uint16_t x = ICR1 - OCR1B;
+  OCR1A = ICR1;
+  OCR1B = ICR1;  // dodgy! used to store last capture value
   return x;
 }
 
 static inline void TIMER_WAIT(uint16_t t) __attribute__((always_inline));
 static inline void TIMER_WAIT(uint16_t t) {
-  OCR1A = t;                // set wait period
+  OCR1A += t;               // set wait period
   TIMSK |= (1 << OCIE1A);   // enable timer interrupt
   TIFR |= (1 << OCF1A);     // clear timer interrupt flag
 }
@@ -21,15 +22,20 @@ static inline void TIMER_DISABLE(void) {
   TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
 }
 
+static inline void RXINT_CLEAR(void) __attribute__((always_inline));
+static inline void RXINT_CLEAR(void) {
+  TIFR |= (1 << ICF1);      // clear input capture interrupt flag
+}
+
 static inline void RXINT_DISABLE(void) __attribute__((always_inline));
 static inline void RXINT_DISABLE(void) {
   TIMSK &= ~(1 << TICIE1);  // disable input capture interrupt
-  TIFR |= (1 << ICF1);      // clear input capture interrupt flag
 }
 
 static inline void RXINT_ENABLE(void) __attribute__((always_inline));
 static inline void RXINT_ENABLE(void) {
-  TIFR |= (1 << ICF1);      // clear input capture interrupt flag
+  RXINT_CLEAR();
+  // TIFR |= (1 << ICF1);      // clear input capture interrupt flag
   TIMSK |= (1 << TICIE1);   // enable input capture interrupt
 }
 
@@ -170,34 +176,41 @@ ISR(TIMER1_COMPA_vect) {
     if (RXINT_CHANGED()) {
       txMessage = TINBUS_TX_ABORTED; // abort tx if we have seen another pulse
       state = TX_FRAME_BREAK;        // force frame break
-      OCR1A += TX_BYTE_TIME;
+      TIMER_WAIT(TX_BYTE_TIME);
+      // OCR1A += TX_BYTE_TIME;
     } else {
       if (++pulseCounter & 0x01) {
         sendPulse();               // send clock pulse
         if (pulseCounter & 0x10) { // is send byte complete
           state = TX_BYTE_BREAK;   // byte break if more tx data to send
-          OCR1A += TX_BYTE_TIME;
+          TIMER_WAIT(TX_BYTE_TIME);
+          // OCR1A += TX_BYTE_TIME;
         } else {
-          OCR1A += TX_PULSE_TIME; // always at least one period
+          TIMER_WAIT(TX_PULSE_TIME);
+          // OCR1A += TX_PULSE_TIME; // always at least one period
         }
       } else {
         if ((txShiftReg & 0x80) == 0) {
           sendPulse(); // send data pulse if bit is zero
         }
         txShiftReg <<= 1;       // move to next bit
-        OCR1A += TX_PULSE_TIME; // always at least one period
+        TIMER_WAIT(TX_PULSE_TIME);
+        // OCR1A += TX_PULSE_TIME; // always at least one period
       }
     }
-    TIFR |= (1 << ICF1); // clear input capture interrupt flag
+    RXINT_CLEAR();  // clear rx input changed flag
+    // TIFR |= (1 << ICF1); // clear input capture interrupt flag
   } else if (state == RX_IGNORE) {
     state = RX_SAMPLING;
-    OCR1A += RX_BYTE_TIMEOUT;
+    TIMER_WAIT(RX_BYTE_TIMEOUT);
+    // OCR1A += RX_BYTE_TIMEOUT;
     RXINT_ENABLE();
     // TIFR |= (1 << ICF1);    // clear input capture interrupt flag
     // TIMSK |= (1 << TICIE1); // enable input capture interrupt
   } else if (state == RX_SAMPLING) {
     state = RX_BYTE_READY; // rx byte timeout - end of byte
-    OCR1A += RX_FRAME_TIMEOUT;
+    TIMER_WAIT(RX_FRAME_TIMEOUT);
+    // OCR1A += RX_FRAME_TIMEOUT;
     if (pulseCounter == 17) { // complete byte received
       uint8_t i = (rx_buffer_head + 1) & TINBUS_RX_BUFFER_MASK;
       if (i == rx_buffer_tail) { // rx buffer is full
@@ -224,14 +237,17 @@ ISR(TIMER1_COMPA_vect) {
     if (tx_buffer_index == tx_buffer_frame_size) {
       tx_buffer_frame_size = TINBUS_NO_FRAME_IN_BUFFER;
       state = TX_FRAME_BREAK; // frame break if no more tx data
-      OCR1A += TX_BYTE_TIME;
+      TIMER_WAIT(TX_BYTE_TIME);
+      // OCR1A += TX_BYTE_TIME;
     } else {
       state = TX_SENDING;
       sendPulse(); // send first clock pulse
       pulseCounter = 1;
       txShiftReg = tx_buffer[tx_buffer_index++];
-      OCR1A += TX_PULSE_TIME;
+      TIMER_WAIT(TX_PULSE_TIME);
+      // OCR1A += TX_PULSE_TIME;
       RXINT_DISABLE();
+      RXINT_CLEAR();
       // TIMSK &= ~(1 << TICIE1); // disable input capture interrupt
       // TIFR |= (1 << ICF1);     // clear input capture interrupt flag
     }
@@ -266,6 +282,7 @@ ISR(TIMER1_CAPT_vect) { // for receiving pulses
   // TIMSK |= (1 << OCIE1A);  // enable timer interrupt
 
   RXINT_DISABLE();
+  RXINT_CLEAR();
   // TIMSK &= ~(1 << TICIE1); // disable input capture interrupt
   // TIFR |= (1 << OCF1A);    // clear timer interrupt flag
 }
