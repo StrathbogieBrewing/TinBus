@@ -18,7 +18,7 @@ uint8_t sltin_sendFrame(tinbus_frame_t *frame, slwrite_f slwrite) {
   uint8_t csum = 0x00;
   // uint8_t src = *input++;
   slwrite(':');
-  slwrite('I');
+  // slwrite('I');
   slwrite(bin2hex(byteCount >> 4));
   slwrite(bin2hex(byteCount));
   // csum -= src;
@@ -32,7 +32,7 @@ uint8_t sltin_sendFrame(tinbus_frame_t *frame, slwrite_f slwrite) {
   csum += 0x55;
   slwrite(bin2hex(csum >> 4));
   slwrite(bin2hex(csum));
-  slwrite('\r');
+  // slwrite('\r');
   slwrite('\n');
   // slwrite('\0');
 
