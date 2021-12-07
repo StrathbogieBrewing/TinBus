@@ -17,30 +17,33 @@
 //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
 //                  +----+
 
-#include "TinBus.h"
+#include "tinbus.h"
 
 #define PIN_LED_AMBER (9)
 
 void setup() {
   pinMode(PIN_LED_AMBER, OUTPUT);
-  tinbusBegin();
+  // tinbusBegin();
+  tinbus_init();
   // Serial.begin(19200);
 }
 
 void loop() {
+  char *hello = "Hello ";
+  char *world = "World!!!";
 
-  digitalWrite(PIN_LED_AMBER, digitalRead(PIN_LED_AMBER) == 0);
-  delayMicroseconds(30000);
+  // digitalWrite(PIN_LED_AMBER, digitalRead(PIN_LED_AMBER) == 0);
 
-  while(!isBusIdle());
-  tinbusWrite(0x10);
-  tinbusWrite(0x31);
-  tinbusWrite(0x72);
-  tinbusWrite(0xF3);
+  tinbus_frame_t frame;
+  memcpy(frame.data, world, strlen(world));
+  frame.size = strlen(world);
+  uint8_t status = tinbus_write(&frame);
 
-  while(!isBusIdle());
-  tinbusWrite(0xF3);
-  tinbusWrite(0x72);
-  tinbusWrite(0x31);
-  tinbusWrite(0x10);
+  while((millis() & 0x40) != 0);
+
+  memcpy(frame.data, hello, strlen(hello));
+  frame.size = strlen(hello);
+  status = tinbus_write(&frame);
+
+  while((millis() & 0x40) == 0);
 }
