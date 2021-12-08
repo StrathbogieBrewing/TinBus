@@ -41,8 +41,8 @@ void loop() {
 
   while((millis() & 0x40) != 0);
 
-  memcpy(frame.data, hello, strlen(hello));
-  frame.size = strlen(hello);
+  frame.data[0] = status;
+  frame.size = 1;
   status = tinbus_write(&frame);
 
   while((millis() & 0x40) == 0);

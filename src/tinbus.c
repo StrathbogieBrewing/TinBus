@@ -261,7 +261,8 @@ ISR(TIMER1_CAPT_vect) { // for receiving pulses
   RXINT_CLEAR();
 }
 
-void sendPulse(void) { // always called from ISR - wont be interrupted
+void sendPulse(void) {
+  // always called from ISR - wont be interrupted
   // 250 ns periods with 8 mhz clock, 7 step sequence 0, +, +, 0, -, -, 0
   // 120 deg conduction eliminates 3rd harmonic and reduces thd
   uint8_t ddrd = (DDRD & ~((1 << 6) | (1 << 7)));
@@ -279,138 +280,5 @@ void sendPulse(void) { // always called from ISR - wont be interrupted
   PORTD &= ~(1 << 7);
   PORTD &= ~(1 << 6);
 }
-
-// if(tx_buffer_head == tx_buffer_tail){
-//   state = RX_IDLE;          // return to idle - allows for transmitting again
-//   TIMSK &= ~(1 << OCIE1A);  // disable timer interrupt
-// } else {
-//   state = TX_BYTE_BREAK;  // byte break if more tx data to send
-//   OCR1A += TX_BYTE_TIME;
-// }
-
-// ISR(TIMER1_COMPA_vect) {
-//   if (++pulseCounter & 0x01) {
-//     // clock pulse
-//     sendPulse();
-//     if (pulseCounter & 0x10) {
-//       // tx complete
-//       TIMSK &= ~(1 << OCIE1A); // disable compare interrupt
-//     }
-//   } else {
-//     // data pulse
-//     if (txShiftReg & 0x80) {
-//       // send data pulse
-//       sendPulse();
-//     }
-//     txShiftReg <<= 1;
-//   }
-// }
-
-// PORTB |= (1 << 1);
-// PORTB &= ~(1 << 1);
-
-// if (++pulseCounter & 0x01) {
-//   // pre data rx phase
-//   if (TIFR & (1 << ICF1)) {
-//     // should not have received a pulse yet - ABORT
-//     return;
-//   }
-//   if (pulseCounter & 0x10) {
-//     // rx complete
-//     rxCallback(rxShiftReg);
-//     rxShiftReg = 0;
-//     pulseCounter = 0;
-//   } else {
-//     OCR1B = RX_LISTEN_UNTIL;
-//   }
-//
-// } else {
-//   // post data rx phase
-//   rxShiftReg <<= 1;
-//   if (TIFR & (1 << ICF1)) {
-//     rxShiftReg &= 0x01;
-//   }
-//
-//   TIMSK &= ~(1 << OCIE1B); // disable timer interrupt
-//
-//   // enable comparator interrupt and wait for clock pulse
-//   TIFR |= (1 << ICF1);    // clear input capture interrupt flag
-//   TIMSK |= (1 << TICIE1); // enable interrupt capture interrupt
-// }
-
-// ISR(TIMER1_COMPA_vect) {
-//   if (++pulseCounter & 0x01) {
-//     // clock pulse
-//     sendPulse();
-//     if (pulseCounter & 0x10) {
-//       // tx complete
-//       TIMSK &= ~(1 << OCIE1A); // disable compare interrupt
-//     }
-//   } else {
-//     // data pulse
-//     if (txShiftReg & 0x80) {
-//       // send data pulse
-//       sendPulse();
-//     }
-//     txShiftReg <<= 1;
-//   }
-// }
-
-// void begin(){
-//   // set up timer 1 for ATMEGA8
-//   TCCR1A = 0;
-//   TCCR1B = (1 << CS10) | (1 << WGM12); // ctc with no prescaling - 8 MHz
-//
-//   // set up analog comparator
-//   ACSR |= (1 << ACIC); // Analog Comparator Input Capture Enable
-//
-//   // start receiving
-//   TIFR |= (1 << ICF1);    // clear input capture interrupt flag
-//   TIMSK |= (1 << TICIE1); // enable interrupt capture interrupt
-//
-//     // TIMSK |= (1 << TICIE1);
-//     // TIMSK |= (1 << OCIE1A);
-//     // TIMSK |= (1 << OCIE1B);
-//     // TIMSK |= (1 << TOIE1);
-// }
-
-// bool transmitByte(uint8_t byte) {
-//
-//   noInterrupts();
-//   if(state == RX_IDLE){
-//     PORTB |= (1 << 1);
-//     PORTB &= ~(1 << 1);
-//
-//     TIMSK &= ~(1 << TICIE1); // disable input capture interrupt
-//     OCR1A = TCNT1 + TX_PULSE_TIME;
-//     sendPulse();            // send first clock pulse
-//     pulseCounter = 1;
-//     state = TX_SENDING;
-//     txShiftReg = byte;
-//     TIFR |= (1 << OCF1A);    // clear timer interrupt flag
-//     TIMSK |= (1 << OCIE1A);  // enable timer compare interrupt
-//     TIFR |= (1 << ICF1);    // clear input capture interrupt flag
-//     interrupts();
-//     return true;
-//   }
-//   interrupts();
-//   return false;
-// }
-
-// bool transmitEnable(uint8_t byte) {
-//   if(state == RX_IDLE){  // need to start transmitting
-//     sendPulse();              // send first clock pulse
-//     OCR1A = TCNT1 + TX_PULSE_TIME;
-//     pulseCounter = 1;
-//     state = TX_SENDING;
-//     txShiftReg = txByte;
-//
-//     TIFR |= (1 << OCF1A);    // clear timer interrupt flag
-//     TIMSK |= (1 << OCIE1A);  // enable timer compare interrupt
-//     TIFR |= (1 << ICF1);    // clear input capture interrupt flag
-//     interrupts();
-//     return true;
-//   }
-// }
 
 #endif
