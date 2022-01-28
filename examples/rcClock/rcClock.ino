@@ -34,16 +34,23 @@ void loop() {
 
   // digitalWrite(PIN_LED_AMBER, digitalRead(PIN_LED_AMBER) == 0);
 
-  tinbus_frame_t frame;
-  memcpy(frame.data, world, strlen(world));
-  frame.size = strlen(world);
-  uint8_t status = tinbus_write(&frame);
+  DDRD = (1 << 6);
+  PORTD |= (1 << 6);
+  delayMicroseconds(200);
+  PORTD &= ~(1 << 6);
 
-  while((millis() & 0x40) != 0);
+  delay(10);
 
-  frame.data[0] = status;
-  frame.size = 1;
-  status = tinbus_write(&frame);
+  // tinbus_frame_t frame;
+  // memcpy(frame.data, world, strlen(world));
+  // frame.size = strlen(world);
+  // uint8_t status = tinbus_write(&frame);
+  //
+  // while((millis() & 0x40) != 0);
+  //
+  // frame.data[0] = status;
+  // frame.size = 1;
+  // status = tinbus_write(&frame);
 
-  while((millis() & 0x40) == 0);
+  // while((millis() & 0x40) == 0);
 }

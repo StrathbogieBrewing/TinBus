@@ -262,23 +262,46 @@ ISR(TIMER1_CAPT_vect) { // for receiving pulses
 }
 
 void sendPulse(void) {
-  // always called from ISR - wont be interrupted
-  // 250 ns periods with 8 mhz clock, 7 step sequence 0, +, +, 0, -, -, 0
-  // 120 deg conduction eliminates 3rd harmonic and reduces thd
-  uint8_t ddrd = (DDRD & ~((1 << 6) | (1 << 7)));
-  DDRD = ddrd | (1 << 6) | (1 << 7);
-  PORTD |= (1 << 7);
-  _NOP();
-  _NOP();
+  DDRD = (1 << 6);
   PORTD |= (1 << 6);
-  PORTD &= ~(1 << 7);
+  delayMicroseconds(2);
   _NOP();
   _NOP();
-  PORTD &= ~(1 << 6);
   _NOP();
-  DDRD = ddrd;
-  PORTD &= ~(1 << 7);
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  _NOP();
+  // _NOP();
+  // _NOP();
   PORTD &= ~(1 << 6);
 }
+
+// void sendPulse(void) {
+//   // always called from ISR - wont be interrupted
+//   // 250 ns periods with 8 mhz clock, 7 step sequence 0, +, +, 0, -, -, 0
+//   // 120 deg conduction eliminates 3rd harmonic and reduces thd
+//   uint8_t ddrd = (DDRD & ~((1 << 6) | (1 << 7)));
+//   DDRD = ddrd | (1 << 6) | (1 << 7);
+//   PORTD |= (1 << 7);
+//   _NOP();
+//   _NOP();
+//   PORTD |= (1 << 6);
+//   PORTD &= ~(1 << 7);
+//   _NOP();
+//   _NOP();
+//   PORTD &= ~(1 << 6);
+//   _NOP();
+//   DDRD = ddrd;
+//   PORTD &= ~(1 << 7);
+//   PORTD &= ~(1 << 6);
+// }
 
 #endif

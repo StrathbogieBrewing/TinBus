@@ -1,0 +1,246 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Transistor_FET:BS170 Q?
+U 1 1 61D50C34
+P 8400 3450
+F 0 "Q?" H 8604 3496 50  0000 L CNN
+F 1 "BS170" H 8604 3405 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline" H 8600 3375 50  0001 L CIN
+F 3 "https://www.onsemi.com/pub/Collateral/BS170-D.PDF" H 8400 3450 50  0001 L CNN
+	1    8400 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 61D51628
+P 7500 3450
+F 0 "R?" V 7707 3450 50  0000 C CNN
+F 1 "4K7" V 7616 3450 50  0000 C CNN
+F 2 "" V 7430 3450 50  0001 C CNN
+F 3 "~" H 7500 3450 50  0001 C CNN
+	1    7500 3450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 61D55D71
+P 8000 3200
+F 0 "C?" H 8115 3246 50  0000 L CNN
+F 1 "27P" H 8115 3155 50  0000 L CNN
+F 2 "" H 8038 3050 50  0001 C CNN
+F 3 "~" H 8000 3200 50  0001 C CNN
+	1    8000 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Diode:1N4148 D?
+U 1 1 61D56448
+P 8500 2000
+F 0 "D?" V 8546 1920 50  0000 R CNN
+F 1 "1N4148" V 8455 1920 50  0000 R CNN
+F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 8500 1825 50  0001 C CNN
+F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 8500 2000 50  0001 C CNN
+	1    8500 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 61D60092
+P 7500 2000
+F 0 "R?" H 7570 2046 50  0000 L CNN
+F 1 "47K" H 7570 1955 50  0000 L CNN
+F 2 "" V 7430 2000 50  0001 C CNN
+F 3 "~" H 7500 2000 50  0001 C CNN
+	1    7500 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 61D61634
+P 7500 2500
+F 0 "C?" H 7615 2546 50  0000 L CNN
+F 1 "1N" H 7615 2455 50  0000 L CNN
+F 2 "" H 7538 2350 50  0001 C CNN
+F 3 "~" H 7500 2500 50  0001 C CNN
+	1    7500 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 61D622EE
+P 7000 2500
+F 0 "R?" H 6930 2454 50  0000 R CNN
+F 1 "47K" H 6930 2545 50  0000 R CNN
+F 2 "" V 6930 2500 50  0001 C CNN
+F 3 "~" H 7000 2500 50  0001 C CNN
+	1    7000 2500
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7500 2350 7500 2150
+Wire Wire Line
+	7500 1850 7500 1500
+Wire Wire Line
+	8500 1500 8500 1850
+Wire Wire Line
+	8500 2150 8500 2950
+Wire Wire Line
+	8000 3050 8000 2950
+Wire Wire Line
+	8000 2950 8500 2950
+Connection ~ 8500 2950
+Wire Wire Line
+	8500 2950 8500 3250
+Wire Wire Line
+	7650 3450 8000 3450
+Wire Wire Line
+	8000 3350 8000 3450
+Connection ~ 8000 3450
+Wire Wire Line
+	8000 3450 8200 3450
+$Comp
+L Regulator_Linear:LP2950-5.0_TO92 U?
+U 1 1 61D67CCC
+P 4250 3000
+F 0 "U?" H 4250 3242 50  0000 C CNN
+F 1 "LP2950-5.0_TO92" H 4250 3151 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline" H 4250 3225 50  0001 C CIN
+F 3 "http://www.ti.com/lit/ds/symlink/lp2951-n.pdf" H 4250 2950 50  0001 C CNN
+	1    4250 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Diode:1N4148 D?
+U 1 1 61D6B708
+P 3500 2000
+F 0 "D?" V 3546 1920 50  0000 R CNN
+F 1 "1N4148" V 3455 1920 50  0000 R CNN
+F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 3500 1825 50  0001 C CNN
+F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 3500 2000 50  0001 C CNN
+	1    3500 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:CP C?
+U 1 1 61D6BC5E
+P 3500 3500
+F 0 "C?" H 3618 3546 50  0000 L CNN
+F 1 "10U" H 3618 3455 50  0000 L CNN
+F 2 "" H 3538 3350 50  0001 C CNN
+F 3 "~" H 3500 3500 50  0001 C CNN
+	1    3500 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C?
+U 1 1 61D6DEFD
+P 5000 3500
+F 0 "C?" H 5118 3546 50  0000 L CNN
+F 1 "10U" H 5118 3455 50  0000 L CNN
+F 2 "" H 5038 3350 50  0001 C CNN
+F 3 "~" H 5000 3500 50  0001 C CNN
+	1    5000 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3500 2150 3500 3000
+Wire Wire Line
+	3950 3000 3500 3000
+Connection ~ 3500 3000
+Wire Wire Line
+	3500 3000 3500 3350
+Wire Wire Line
+	4550 3000 5000 3000
+Wire Wire Line
+	5000 3000 5000 3350
+Wire Wire Line
+	5000 3650 5000 4000
+Wire Wire Line
+	5000 4000 4250 4000
+Wire Wire Line
+	3500 4000 3500 3650
+Wire Wire Line
+	4250 3300 4250 4000
+Connection ~ 4250 4000
+Wire Wire Line
+	4250 4000 3500 4000
+Wire Wire Line
+	5000 4000 8500 4000
+Wire Wire Line
+	8500 4000 8500 3650
+Connection ~ 5000 4000
+Wire Wire Line
+	3500 1500 3500 1850
+Wire Wire Line
+	7500 3000 7500 2650
+Connection ~ 7500 1500
+Wire Wire Line
+	7500 1500 8500 1500
+Wire Wire Line
+	3500 1500 7500 1500
+Wire Wire Line
+	7000 2650 7000 3000
+Wire Wire Line
+	7000 3000 7500 3000
+$Comp
+L power:+5V #PWR?
+U 1 1 61DDD964
+P 5000 2100
+F 0 "#PWR?" H 5000 1950 50  0001 C CNN
+F 1 "+5V" H 5015 2273 50  0000 C CNN
+F 2 "" H 5000 2100 50  0001 C CNN
+F 3 "" H 5000 2100 50  0001 C CNN
+	1    5000 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5000 3000 5000 2100
+Connection ~ 5000 3000
+$Comp
+L power:+5V #PWR?
+U 1 1 61DE2CC9
+P 7000 2100
+F 0 "#PWR?" H 7000 1950 50  0001 C CNN
+F 1 "+5V" H 7015 2273 50  0000 C CNN
+F 2 "" H 7000 2100 50  0001 C CNN
+F 3 "" H 7000 2100 50  0001 C CNN
+	1    7000 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7000 2100 7000 2350
+$Comp
+L MCU_Microchip_ATmega:ATmega8L-8PU U?
+U 1 1 61DFE8AF
+P 9900 4000
+F 0 "U?" H 9900 5581 50  0000 C CNN
+F 1 "ATmega8L-8PU" H 9900 5490 50  0000 C CNN
+F 2 "Package_DIP:DIP-28_W7.62mm" H 9900 4000 50  0001 C CIN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/atmel-2486-8-bit-avr-microcontroller-atmega8_l_datasheet.pdf" H 9900 4000 50  0001 C CNN
+	1    9900 4000
+	1    0    0    -1  
+$EndComp
+Text GLabel 6500 3450 0    50   Input ~ 0
+TINTX
+Wire Wire Line
+	7350 3450 6500 3450
+Text GLabel 6500 3000 0    50   Input ~ 0
+TINRX
+Wire Wire Line
+	6500 3000 7000 3000
+Connection ~ 7000 3000
+$EndSCHEMATC
