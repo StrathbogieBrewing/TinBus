@@ -16,7 +16,7 @@ After many years of messing around getting different electronic devices and proj
 
 Of course, why reinvent the wheel – there are already so many excellent and widely used ways of connecting things together.
 
-TinBus uses short electrical pulses to send and receive information across a single pair of wires. The timing of the pulses carries the information. So why not call it Temporal Impulse Networking bus (TIN bus). Most significantly it can be implemented on a low cost micro controller using only two pins, it uses very little power. Ideal for low power sensor nodes on the edge of IoT systems where wireless technology is not appropriate.
+TinBus uses short electrical pulses to send and receive information across a single pair of wires. The timing of the pulses carries the information. So why not call it Temporal Impulse Networking bus (TIN bus). Most significantly it can be implemented on a low cost micro controller using only two pins, it uses very little power. Ideal for low power sensor nodes on the edge of IoT systems where wireless technology is not appropriate or where providing a copper connection is appropriate.
 
 By sending very short pulses TinBus signals can be superimposed onto a DC power supply allowing power and data to be carried on a single pair of wires. It’s great for low power remote sensors.
 
