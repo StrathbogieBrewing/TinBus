@@ -9,6 +9,16 @@
 extern "C" {
 #endif
 
+// function prototypes for serial line tx and rx functions
+// we only carry vaild 7 bit printable ascii characters on the wire
+
+// returns byte read on success, 0 (NUL or 0x00) on empty or -1 on failure
+typedef int8_t (*getChar)(void);
+
+// returns byte sent on success, 0 on busy or -1 on failure
+typedef int8_t (*putChar)(int8_t character);
+
+
 
 
 typedef void (*slwrite_f)(uint8_t byte);
