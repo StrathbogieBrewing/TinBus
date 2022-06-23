@@ -1,0 +1,231 @@
+    1  exit
+    2  su
+    3  sudo dmesg
+    4  sudo journalctl
+    5  cat /lib/systemd/systemd-backlight
+    6  ls /lib/systemd/
+    7  systemctl --type=service
+    8  ls /etc/systemd/system/
+    9  ls /etc/systemd/system/multi-user.target.wants/
+   10  ls /etc/systemd/system/default.target.wants/
+   11  ls /etc/systemd/system/sysinit.target.wants/
+   12  find /etc/systemd/ -n systemd-backlight
+   13  find /etc/systemd/  systemd-backlight
+   14  find /etc/systemd/  | grep systemd-backlight
+   15  find /etc/systemd/  | grep backlight
+   16  find /etc  | grep backlight
+   17  sudo find /etc  | grep backlight
+   18  sudo /usr/lib/systemd/system/systemd-backlight@.service
+   19  man systemd-backlight@.service
+   20  cat /var/lib/systemd/backlight/
+   21  ls /var/lib/systemd/backlight/
+   22  reboot
+   23  sudo reboot
+   24  ls /var/lib/systemd/backlight/
+   25  ls -al /var/lib/systemd/backlight/
+   26  cat /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:acpi_video0 
+   27  cat /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:intel_backlight 
+   28  cat /var/lib/systemd/backlight/
+   29  ls /var/lib/systemd/backlight/
+   30  sudo cat /usr/lib/systemd/system/systemd-backlight@.service
+   31  sudo nano /usr/lib/systemd/system/systemd-backlight@.service
+   32  cat /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:intel_backlight 
+   33  cat /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:acpi_video0 
+   34  sudo nano /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:acpi_video0 
+   35  sudo nano /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:intel_backlight 
+   36  sudo reboot
+   37  sudo nano /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:acpi_video0 
+   38  sudo nano /var/lib/systemd/backlight/pci-0000\:00\:02.0\:backlight\:intel_backlight 
+   39  sudo nano /etc/systemd/logind.conf
+   40  bg
+   41  bf
+   42  pkill nano
+   43  sudo pkill nano
+   44  bg
+   45  fg
+   46  bg
+   47  sudo nano /etc/systemd/logind.conf
+   48  sudo reboot
+   49  sudo  docker network ls
+   50  sudo docker container inspect solarnodered
+   51  ping 172.17.0.2
+   52  wget
+   53  curl 172.17.0.2:1880
+   54  ping orac
+   55  rxit
+   56  exit
+   57  ls
+   58  pwd
+   59  top
+   60  sudo apt-get update
+   61  sudo apt-get install     apt-transport-https     ca-certificates     curl     gnupg     lsb-release
+   62  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+   63  echo   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+   64    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   65  sudo apt-get update
+   66  sudo apt-get install docker-ce docker-ce-cli containerd.io
+   67  sudo docker run hello-world
+   68  docker run -it -p 1880:1880 -v node_red_data:/data --name solarnodered nodered/node-red
+   69  sudo docker run -it -p 1880:1880 -v node_red_data:/data --name solarnodered nodered/node-red
+   70  ls /dev/tty*
+   71  ls /dev/serial/by-id
+   72  ls -al /dev/serial/by-id
+   73  top
+   74  socat
+   75  sud apt update
+   76  sudo apt update
+   77  sudo apt install socat
+   78  socat /dev/ttyACM0,b115200,fork -
+   79  socat /dev/ttyACM0,b115200 -
+   80  sudo nano /etc/udev/rules.d/99-serial.rules
+   81  ls /etc/udev/rules.d
+   82  sudo ls /etc/udev/rules.d
+   83  groups
+   84  sudo usermod -a -G dialout johny
+   85  socat /dev/ttyACM0,b115200 -
+   86  groups
+   87  less /etc/groups
+   88  less /etc/group
+   89  ls -al /dev/tty*
+   90  exit
+   91  groups
+   92  socat /dev/ttyACM0,b115200 -
+   93  socat /dev/ttyACM0,b115200,raw -
+   94  docker list
+   95  docker stop solarnodered
+   96  sudo docker stop solarnodered
+   97  sudo docker run -it -p 1880:1880 -v node_red_data:/data --name solarnodered --group-add dialout nodered/node-red 
+   98  sudo docker start solarnodered --group-add dialout 
+   99  docker start --help
+  100  socat /dev/ttyACM0,b115200,raw -
+  101  exit
+  102  socat /dev/ttyACM0,b115200,raw -
+  103  sudo journalctl
+  104  sudo journalctl | tail -n 100
+  105  sudo journalctl | tail -n 1000
+  106  sudo journalctl | grep disply
+  107  sudo journalctl | grep disp
+  108  sudo journalctl | grep back
+  109  sudo hwinfo --framebuffer
+  110  sudo dmesg | grep vga
+  111  sudo journalctl | grep vga
+  112  socat /dev/ttyACM0,b115200,raw -
+  113  sudo journalctl | grep vga
+  114  cat /etc/default/console-setup
+  115  sudo nano /etc/default/console-setup
+  116  top
+  117  ps -alx
+  118  sudo reboot
+  119  sudo journalctl | grep vga
+  120  sudo nano /etc/default/console-setup
+  121  sudo reboot
+  122  cat /etc/vconsole.conf
+  123  sudo docker images
+  124  sudo docker ps -a
+  125  sudo docker commit db66dbfc5e50 nodered
+  126  sudo docker images
+  127  docker run -it -p 1880:1880 --privileged -v /dev:/dev -v node_red_data:/data --name solarred nodered
+  128  sudo docker run -it -p 1880:1880 --privileged -v /dev:/dev -v node_red_data:/data --name solarred nodered
+  129  sudo docker ps -a
+  130  ps -alx
+  131  exit
+  132  ls /dev/tty*
+  133  cat /etc/passwd
+  134  sudo docker exec -it c60f628f2660 bash
+  135  sudo docker exec -it c60f628f2660 /bin/bash
+  136  sudo docker exec -it -u 0 c60f628f2660 /bin/bash
+  137  sudo docker stop c60f628f2660 
+  138  sudo docker start c60f628f2660 
+  139  top
+  140  sudo apt install powertop
+  141  powertop
+  142  sudo powertop
+  143  exit
+  144  docker pull influxdb
+  145  sudo docker pull influxdb
+  146  docker run -p 8086:8086       -v influxdb2:/var/lib/influxdb2       influxdb:2.0
+  147  sudo docker run -p 8086:8086       -v influxdb2:/var/lib/influxdb2       influxdb:2.0
+  148  sudo docker images
+  149  exit
+  150  top
+  151  sudo docker images
+  152  sudo docker ps -a
+  153  sudo docker rmi hello-world
+  154  sudo docker rm 926880feee5b
+  155  sudo docker ps -a
+  156  sudo docker rm db66dbfc5e50
+  157  sudo docker ps -a
+  158  sudo docker rmi hello-world
+  159  sudo docker images
+  160  sudo docker rmi nodered/node-red
+  161  sudo docker images
+  162  sudo docker ps -a
+  163  sudo docker run -d -p 8086:8086       -v influxdb2/data:/var/lib/influxdb2       -v influxdb2/config:/etc/influxdb2       -e DOCKER_INFLUXDB_INIT_MODE=setup       -e DOCKER_INFLUXDB_INIT_USERNAME=influxdb       -e DOCKER_INFLUXDB_INIT_PASSWORD=influxdb       -e DOCKER_INFLUXDB_INIT_ORG=bogie       -e DOCKER_INFLUXDB_INIT_BUCKET=solarbus       influxdb
+  164  sudo docker run -d -p 8086:8086       -v data:/var/lib/influxdb2       -v config:/etc/influxdb2       -e DOCKER_INFLUXDB_INIT_MODE=setup       -e DOCKER_INFLUXDB_INIT_USERNAME=influxdb       -e DOCKER_INFLUXDB_INIT_PASSWORD=influxdb       -e DOCKER_INFLUXDB_INIT_ORG=bogie       -e DOCKER_INFLUXDB_INIT_BUCKET=solarbus       influxdb
+  165  sudo docker ps -a
+  166  ls /dev/tty*
+  167  socat
+  168  socat /dev/ttyACM0,b115200 -
+  169  sudo docker ps -a
+  170  ping 127.0.0.1:8086
+  171  exit
+  172  sudo apt install avrdude
+  173  avrdude
+  174  ls /dev/ttyU*
+  175  ls /dev/tty*
+  176  socat /dev/ttyACM0,b115200 -
+  177  socat /dev/ttyACM0,b115200 - | grep mppt
+  178  socat /dev/ttyACM0,b115200 -
+  179  socat /dev/ttyACM0,b115200 - | grep mppt
+  180  ps -alx
+  181  socat /dev/ttyACM0,b115200 - | grep mppt
+  182  socat /dev/ttyACM0,b115200 - | grep grid
+  183  socat /dev/ttyACM0,b115200 - | grep mppt
+  184  socat /dev/ttyACM0,b115200 -
+  185  exit
+  186  sudo docker -ps
+  187  sudo docker ps
+  188  sudo docker exec -it 86cb8477bedb influx -username influx -password influx
+  189  sudo docker exec -it 86cb8477bedb influx --username influx --password influx
+  190  sudo docker exec -it 86cb8477bedb influx 
+  191  sudo docker exec -it 86cb8477bedb /bin/bash
+  192  socat /dev/ttyACM0,b115200 -
+  193  exit
+  194  ip a
+  195  ping orac
+  196  ip a
+  197  exit
+  198  avrdude
+  199  ps -alx
+  200  ps -alx | avrdude 
+  201  ps -alx |grep  avrdude
+  202  pkill avrdude
+  203  exit
+  204  socat /dev/ttyACM0,b115200 -
+  205  ls /dev/tty*
+  206  socat /dev/ttyACM0,b115200 -
+  207  ls /dev/tty*
+  208  socat /dev/ttyTTY0,b115200 -
+  209  socat /dev/ttyUSB0,b115200 -
+  210  pkill avrdude
+  211  ls /dev/tty*
+  212  pkill avrdude
+  213  socat /dev/ttyACM0,b115200 -
+  214  exit
+  215  top
+  216  pkill avrdude
+  217  top
+  218  exit
+  219  history
+
+  sudo docker run -d -p 8086:8086 -v data:/var/lib/influxdb2 -v config:/etc/influxdb2 \
+  -e DOCKER_INFLUXDB_INIT_MODE=setup -e DOCKER_INFLUXDB_INIT_USERNAME=influxdb \
+  -e DOCKER_INFLUXDB_INIT_PASSWORD=influxdb -e DOCKER_INFLUXDB_INIT_ORG=bogie \
+  -e DOCKER_INFLUXDB_INIT_BUCKET=solarbus influxdb
+
+  sudo docker run -d -p 1880:1880 --group-add dialout --name solarred --privileged \
+  -v /dev:/dev -v node_red_data:/data nodered
+
+  sudo docker exec -it solarred /bin/bash
+
+  stty -F /dev/ttyACM0 115200 raw -echo -echoe -echok
